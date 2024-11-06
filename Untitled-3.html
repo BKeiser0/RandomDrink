@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Cocktail Card</title>
+    <!-- Importing jQuery (once only) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Linking CSS -->
+    <link rel="stylesheet" href="Untitled-2.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+        integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+        crossorigin="anonymous"></script>
+</head>
+
+<body>
+
+    <div class="card" style="width: 18rem;">
+        <!-- Placeholder image -->
+        <img src="..." class="card-img-top" alt="Drink Image" id="image">
+        <div class="card-body">
+            <h5 class="card-title" id="title">Card title</h5>
+            <p class="card-text" id="description">Description will appear here.</p>
+            <ul class="list-group" id="ingredients-list">
+                <!-- Ingredients will be dynamically added here -->
+            </ul>
+            <a href="#" class="btn btn-primary" id="button">Get a random</a>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            $('#button').click(function () {
+                
+                fetch('https://www.thecocktaildb.com/api/json/v1/1/random.php')
+                    .then((res) => {
+                        if (!res.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return res.json(); 
+                    })
+                    .then((data) => {
+                        console.log(data);  // Log the entire response to the console
+
+                        const cocktail = data.drinks[0]; // Get the first cocktail from the 'drinks' array
+                        const title = cocktail.strDrink; // Cocktail name
+                        const image = cocktail.strDrinkThumb; // Cocktail image URL
+                        const description = cocktail.strInstructions; // Cocktail instructions
+
+                        // Clear previous ingredient list
+                        $('#ingredients-list').empty();
+
+                        // Update the card content dynamically
+                        $('#title').text(title);  // Set the cocktail name
+                        $('#image').attr('src', image);  // Set the cocktail image
+                        $('#description').text(description);  // Set the cocktail description
+
+                        // Loop through ingredient fields (strIngredient1, strIngredient2, ..., strIngredient15)
+                        for (let i = 1; i <= 15; i++) {
+                            const ingredient = cocktail[`strIngredient${i}`];
+                            const measure = cocktail[`strMeasure${i}`];
+
+                            // Only add the ingredient if it's not empty
+                            if (ingredient) {
+                                // If there's a measure, add it before the ingredient
+                                const ingredientText = measure ? `${measure} ${ingredient}` : ingredient;
+                                $('#ingredients-list').append(`<li class="list-group-item">${ingredientText}</li>`);
+                            }
+                        }
+                    })
+                    .catch((error) => {
+                        console.error('Error fetching data:', error);  // Handle any errors
+                        alert('Failed to fetch cocktail. Check console for details.');
+                    });
+            });
+        });
+    </script>
+
+</body>
+
+</html>

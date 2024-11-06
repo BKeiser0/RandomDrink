@@ -1,0 +1,30 @@
+ /* Set up Flexbox for the body */
+ body {
+    padding: 20px;
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: flex-start; /* Align to the top */
+    height: 100vh; /* Full height of the viewport */
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+/* Create a wrapper for content */
+.content-wrapper {
+    display: flex;
+    flex-direction: column; /* Stack elements vertically */
+    align-items: center; /* Center items horizontally */
+    gap: 10px; /* Space between elements */
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+p {
+    font-size: 18px;
+    color: #333;
+    margin: 5px 0;
+}
